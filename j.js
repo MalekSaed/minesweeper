@@ -5,6 +5,7 @@ for (let i = 0; i < 100; i++) {
 	document.getElementById('board').appendChild(cell);
 }
 
+// distribute mines and calculateNeighborMineCounts 
 function Board(BSize, mineCount) {
 	var board = {};
 	for (var r = 0; r < BSize; r++) {
