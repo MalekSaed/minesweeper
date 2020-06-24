@@ -10,19 +10,19 @@ function Board(BSize, mineCount) {
 	var board = {};
 	for (var r = 0; r < BSize; r++) {
 		for (var c = 0; c < BSize; c++) {
-			board[r + "" + c] = Cell(r, c, false, false, false, 0);
+			board[r + "" + c] = getCell(r, c, false, false, false, 0);
 		}
 	}
 	board = randomlyAssignMines(board, mineCount);
 	board = calculateNeighborMineCounts(board, BSize);
 	return board;
 }
-
-function Cell(r, c, opened, flagged, mined, neighborMineCount) {
+// get cell object
+function getCell(row, column, opened, flagged, mined, neighborMineCount) {
 	return {
-		id: r + "" + c,
-		r: r,
-		c: c,
+		id: row + "" + column,
+		row: row,
+		column: column,
 		opened: opened,
 		flagged: flagged,
 		mined: mined,
@@ -30,18 +30,18 @@ function Cell(r, c, opened, flagged, mined, neighborMineCount) {
 	}
 }
 
-
+//initialize Cells
 var initializeCells = function (BSize) {
-	var r = 0;
-	var c = 0;
+	var row = 0;
+	var column = 0;
 	$(".c").each(function () {
-		$(this).attr("id", r + "" + c).css('color', 'black').text("");
-		$('#' + r + "" + c).css('background-image',
-			'radial-gradient(#fff,#e6e6e6)');
-		c++;
-		if (c >= BSize) {
-			c = 0;
-			r++;
+		$(this).attr("id", row + "" + column).css('color', 'black').text("");
+		$('#' + row + "" + column).css('background-image',
+			'radial-gradient(#e6e6e6,#808080)');
+		column++;
+		if (column >= BSize) {
+			column = 0;
+			row++;
 		}
 
 		$(this).off().click(function (e) {
@@ -49,8 +49,8 @@ var initializeCells = function (BSize) {
 			var isVictory = true;
 			var cells = Object.keys(board);
 			for (var i = 0; i < cells.length; i++) {
-				if (!board[cells[i]].mined) {
-					if (!board[cells[i]].opened) {
+				if (!board[cells[i]].mined) {       // The cell did not mined
+					if (!board[cells[i]].opened) {  // The cell did not opened
 						isVictory = false;
 						break;
 					}
@@ -63,7 +63,7 @@ var initializeCells = function (BSize) {
 					'color': ' #a0dae6',
 					'background-color': 'green'
 				});
-				clearInterval(timeout);
+				clearInterval(timeout);  //Stop time
 			}
 		});
 
@@ -84,17 +84,17 @@ var handleClick = function (id) {
 			var $cell = $('#' + id);
 			if (!cell.opened) {
 				if (!cell.flagged) {
-					if (cell.mined) {
+					if (cell.mined) { //mine change color when losing
 						loss();
 						$cell.html(MINE).css('color', 'red');
 					}
 					else {
 						cell.opened = true;
-						if (cell.neighborMineCount > 0) {
+						if (cell.neighborMineCount > 0) {  // Neighbor mine coloring. 
 							var color = getNumberColor(cell.neighborMineCount);
 							$cell.html(cell.neighborMineCount).css('color', color);
 						}
-						else {
+						else {  // Some cell were not pressed.
 							$cell.html("")
 								.css('background-image', 'radial-gradient(#e6e6e6,#c9c7c7)');
 							var neighbors = getNeighbors(id);
