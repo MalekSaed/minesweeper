@@ -328,4 +328,5 @@ var board = newGame(BSize, mines);
 
 $('#new-game-button').click(function () {
 	board = newGame(BSize, mines);
+	$('#mines-remaining').text("10");
 })
